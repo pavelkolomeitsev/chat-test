@@ -1,3 +1,5 @@
+const { validationResult } = require('express-validator');
+
 exports.getLessons = (req, res, next) => {
     res.status(200).json({
         lessons: [
@@ -43,6 +45,13 @@ exports.getLessons = (req, res, next) => {
 
 exports.createLesson = (req, res, next) => {
 
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+        res.status(422).json({
+            message: 'Validation failed. Enter correct data!',
+            errors: errors.array()
+        });
+    }
     const theme = req.body.theme;
     const teacher = req.body.teacher;
     const students = req.body.students;
@@ -51,7 +60,7 @@ exports.createLesson = (req, res, next) => {
 
     // create lesson in db
     res.status(201).json({
-        message: 'Lesson was created successfully!',
+        message: 'Lesson was added successfully!',
         post: { id: new Date().toISOString(), theme: theme, teacher: teacher, classroom: classroom, time: time }
     });
 };
