@@ -2,6 +2,7 @@ const express = require('express');
 const bodyParser = require('body-parser');
 
 const lessonRoutes = require('./routes/lesson');
+const connectMongo = require('./db/connectDB');
 
 const app = express();
 
@@ -16,4 +17,15 @@ app.use((req, res, next) => {
 
 app.use(lessonRoutes);
 
-app.listen(8000);
+async function startServer() {
+    try {
+        await connectMongo; // ?
+        app.listen(8000, () => {
+            console.log('Server has been started...');
+        });
+    } catch (error) {
+        console.log(error);
+    }
+};
+
+startServer();
