@@ -4,6 +4,8 @@ const lessonController = require('./controllers/lesson');
 
 const router = express.Router();
 
-router.get('/lesson');
+router.get('/lessons', lessonController.getLessons);
+
+router.post('/lessons', lessonController.createLesson);
 
 module.exports = router;
