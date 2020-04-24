@@ -1,5 +1,7 @@
 const { validationResult } = require('express-validator');
 
+const Lesson = require('/chat_test/models/lesson');
+
 exports.getLessons = (req, res, next) => {
     res.status(200).json({
         lessons: [
@@ -43,7 +45,7 @@ exports.getLessons = (req, res, next) => {
     });
 };
 
-exports.createLesson = (req, res, next) => {
+exports.createLesson = async (req, res, next) => {
 
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
@@ -53,14 +55,28 @@ exports.createLesson = (req, res, next) => {
         });
     }
     const theme = req.body.theme;
-    const teacher = req.body.teacher;
+    const teacher = req.body.teacherId;
     const students = req.body.students;
     const classroom = req.body.classroom;
     const time = req.body.time;
 
-    // create lesson in db
-    res.status(201).json({
-        message: 'Lesson was added successfully!',
-        post: { id: new Date().toISOString(), theme: theme, teacher: teacher, classroom: classroom, time: time }
+    const lesson = new Lesson({
+        theme: theme,
+        teacherId: teacher,
+        students: students,
+        classroom: classroom,
+        time: time
     });
+
+    try {
+        const result = await lesson.save();
+
+        res.status(201).json({
+            message: 'Lesson was added successfully!',
+            result: result
+        });
+
+    } catch (error) {
+        console.log(error);
+    }
 };
