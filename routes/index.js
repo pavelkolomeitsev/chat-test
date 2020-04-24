@@ -16,4 +16,10 @@ router.post('/lesson', [
 ], lessonController.createLesson
 );
 
+router.get('/lesson/:lessonId', lessonController.getLesson);
+
+// update router...
+
+router.delete('/lesson/:lessonId', lessonController.deleteLesson);
+
 module.exports = router;

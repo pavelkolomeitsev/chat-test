@@ -1,5 +1,7 @@
 const mongoose = require('mongoose');
 
+const Teacher = require('./teacher');
+
 const Schema = mongoose.Schema;
 
 const lessonSchema = new Schema({
@@ -7,7 +9,7 @@ const lessonSchema = new Schema({
         type: String,
         required: true
     },
-    teacherId: {
+    teacher: {
         type: Schema.Types.ObjectId,
         ref: 'Teacher',
         required: true

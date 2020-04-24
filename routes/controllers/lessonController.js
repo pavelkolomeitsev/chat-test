@@ -2,47 +2,22 @@ const { validationResult } = require('express-validator');
 
 const Lesson = require('/chat_test/models/lesson');
 
-exports.getLessons = (req, res, next) => {
-    res.status(200).json({
-        lessons: [
-            {
-                theme: 'First lesson',
-                teacher: 'Evgen Popov',
-                students: [
-                    'Ivan Kovtun',
-                    'Maria Padalko',
-                    'Anna Glushko',
-                    'Petro Poroshenko',
-                ],
-                classroom: 27,
-                time: '9:00 - 9:45'
-            },
-            {
-                theme: 'English lesson',
-                teacher: 'Alla Barsuk',
-                students: [
-                    'Ivan Kovtun',
-                    'Maria Padalko',
-                    'Anna Glushko',
-                    'Petro Poroshenko',
-                ],
-                classroom: 18,
-                time: '10:00 - 10:45'
-            },
-            {
-                theme: 'Math lesson',
-                teacher: 'Kateryna Shevchenko',
-                students: [
-                    'Ivan Kovtun',
-                    'Maria Padalko',
-                    'Anna Glushko',
-                    'Petro Poroshenko',
-                ],
-                classroom: 27,
-                time: '11:00 - 11:45'
-            },
-        ]
-    });
+exports.getLessons = async (req, res, next) => {
+
+    try {
+
+        const lessons = await Lesson.find().populate('teacher', 'firstName lastName -_id');
+        if (!lessons) {
+            const error = new Error('Any lessons were found!');
+            error.statusCode = 404;
+            throw error;
+        }
+
+        res.status(200).json({ message: 'Fetched lessons successfully!', lessons: lessons });
+
+    } catch (error) {
+        console.log(error);
+    }
 };
 
 exports.createLesson = async (req, res, next) => {
@@ -55,14 +30,14 @@ exports.createLesson = async (req, res, next) => {
         });
     }
     const theme = req.body.theme;
-    const teacher = req.body.teacherId;
+    const teacherId = req.body.teacherId;
     const students = req.body.students;
     const classroom = req.body.classroom;
     const time = req.body.time;
 
     const lesson = new Lesson({
         theme: theme,
-        teacherId: teacher,
+        teacher: teacherId,
         students: students,
         classroom: classroom,
         time: time
@@ -75,6 +50,40 @@ exports.createLesson = async (req, res, next) => {
             message: 'Lesson was added successfully!',
             result: result
         });
+
+    } catch (error) {
+        console.log(error);
+    }
+};
+
+exports.getLesson = async (req, res, next) => {
+    const lessonId = req.params.lessonId;
+
+    try {
+        const lesson = await Lesson.findById(lessonId);
+        if (!lesson) {
+            const error = new Error('Lesson was not found!');
+            error.statusCode = 404;
+            throw error;
+        }
+
+        res.status(200).json({ message: 'Lesson fetched', lesson: lesson });
+
+    } catch (error) {
+        console.log(error);
+    }
+};
+
+// update lesson
+
+exports.deleteLesson = async (req, res, next) => {
+
+    const lessonId = req.params.lessonId;
+
+    try {
+        await Lesson.findByIdAndDelete(lessonId);
+
+        res.status(200).json({ message: 'Lesson was deleted' });
 
     } catch (error) {
         console.log(error);
