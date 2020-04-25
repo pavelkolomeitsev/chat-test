@@ -1,8 +1,8 @@
 const express = require('express');
 const bodyParser = require('body-parser');
-const mongoose = require('mongoose');
 
 const lessonRoutes = require('./routes/index');
+const mongoConnection = require('./db/connectionMongo').mongoConnection;
 
 const app = express();
 
@@ -17,16 +17,6 @@ app.use((req, res, next) => {
 
 app.use(lessonRoutes);
 
-async function startServer() {
-    try {
-        await mongoose.connect('mongodb+srv://pavel:yX3dbGT5P@clusternodeshop-frwbo.mongodb.net/lessons?retryWrites=true&w=majority',
-            { useNewUrlParser: true, useUnifiedTopology: true });
-        app.listen(8000, () => {
-            console.log('Server has been started...');
-        });
-    } catch (error) {
-        console.log(error);
-    }
-};
-
-startServer();
+mongoConnection(() => {
+    app.listen(process.env.PORT || 8000);
+});
