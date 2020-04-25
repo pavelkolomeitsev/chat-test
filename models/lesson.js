@@ -1,6 +1,7 @@
 const mongoose = require('mongoose');
 
 const Teacher = require('./teacher');
+const Student = require('./student');
 
 const Schema = mongoose.Schema;
 
@@ -14,18 +15,13 @@ const lessonSchema = new Schema({
         ref: 'Teacher',
         required: true
     },
-
-    // [
-    //     {
-    //         type: Schema.Types.ObjectId,
-    //         ref: 'Student',
-    //         required: true
-    //     }
-    // ],
-    students: {
-        type: Array,
-        required: true
-    },
+    students: [
+        {
+            type: Schema.Types.ObjectId,
+            ref: 'Student',
+            required: true
+        }
+    ],
     classroom: {
         type: Number,
         required: true
