@@ -1,17 +1,18 @@
 const mongoose = require('mongoose');
 
-const mongoConnection = (callback) => {
+const mongoConnection = async (callback) => {
 
-    mongoose.connect(`mongodb+srv://${process.env.MONGO_NAME}:${process.env.MONGO_PASSWORD}@clusternodeshop-frwbo.mongodb.net/${process.env.MONGO_DB}?retryWrites=true&w=majority`,
-        { useNewUrlParser: true, useUnifiedTopology: true })
-        .then(result => {
-            console.log('Connected!');
-            callback();
-        })
-        .catch(error => {
-            console.log(error);
-            throw error;
-        });
+    try {
+
+        await mongoose.connect(`mongodb+srv://${process.env.MONGO_NAME}:${process.env.MONGO_PASSWORD}@clusternodeshop-frwbo.mongodb.net/${process.env.MONGO_DB}?retryWrites=true&w=majority`,
+            { useNewUrlParser: true, useUnifiedTopology: true });
+
+        console.log('Connected!');
+
+        callback();
+    } catch (error) {
+        console.log(error);
+    }
 }
 
 exports.mongoConnection = mongoConnection;
