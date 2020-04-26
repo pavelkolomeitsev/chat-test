@@ -13,8 +13,7 @@ router.post('/lesson', [
     body('students').isArray({ min: 1 }),
     body('classroom').isInt(),
     body('time').isLength({ min: 7 }),
-], lessonController.createLesson
-);
+], lessonController.createLesson);
 
 router.get('/lesson/:lessonId', lessonController.getLesson);
 

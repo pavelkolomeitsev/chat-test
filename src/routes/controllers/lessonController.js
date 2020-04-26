@@ -1,11 +1,9 @@
 const { validationResult } = require('express-validator');
 
-const Lesson = require('/chat_test/models/lesson');
+const Lesson = require('../../../models/lesson');
 
 exports.getLessons = async (req, res, next) => {
-
     try {
-
         const lessons = await Lesson.find()
             .populate('teacher', 'firstName lastName -_id')
             .populate('students', 'firstName lastName class -_id');
@@ -15,20 +13,18 @@ exports.getLessons = async (req, res, next) => {
             throw error;
         }
 
-        res.status(200).json({ message: 'Fetched lessons successfully!', lessons: lessons });
-
+        res.status(200).json({ message: 'Fetched lessons successfully!', lessons });
     } catch (error) {
         console.log(error);
     }
 };
 
 exports.createLesson = async (req, res, next) => {
-
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
         res.status(422).json({
             message: 'Validation failed. Enter correct data!',
-            errors: errors.array()
+            errors: errors.array(),
         });
     }
     const theme = req.body.theme;
@@ -38,11 +34,11 @@ exports.createLesson = async (req, res, next) => {
     const time = req.body.time;
 
     const lesson = new Lesson({
-        theme: theme,
+        theme,
         teacher: teacherId,
-        students: students,
-        classroom: classroom,
-        time: time
+        students,
+        classroom,
+        time,
     });
 
     try {
@@ -50,9 +46,8 @@ exports.createLesson = async (req, res, next) => {
 
         res.status(201).json({
             message: 'Lesson was added successfully!',
-            result: result
+            result,
         });
-
     } catch (error) {
         console.log(error);
     }
@@ -72,8 +67,7 @@ exports.getLesson = async (req, res, next) => {
             throw error;
         }
 
-        res.status(200).json({ message: 'Lesson fetched', lesson: lesson });
-
+        res.status(200).json({ message: 'Lesson fetched', lesson });
     } catch (error) {
         console.log(error);
     }
@@ -81,14 +75,13 @@ exports.getLesson = async (req, res, next) => {
 
 // update lesson
 exports.updateLesson = async (req, res, next) => {
-
     const lessonId = req.params.lessonId;
 
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
         res.status(422).json({
             message: 'Validation failed. Enter correct data!',
-            errors: errors.array()
+            errors: errors.array(),
         });
     }
 
@@ -117,23 +110,20 @@ exports.updateLesson = async (req, res, next) => {
 
         res.status(200).json({
             message: 'Lesson was updated successfully!',
-            result: lesson
+            result: lesson,
         });
-
     } catch (error) {
         console.log(error);
     }
 }
 
 exports.deleteLesson = async (req, res, next) => {
-
     const lessonId = req.params.lessonId;
 
     try {
         await Lesson.findByIdAndDelete(lessonId);
 
         res.status(200).json({ message: 'Lesson was deleted' });
-
     } catch (error) {
         console.log(error);
     }

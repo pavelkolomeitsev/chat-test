@@ -1,0 +1,19 @@
+{
+  "env": {
+    "browser": true,
+    "es6": true,
+    "node": true
+  },
+  "extends": "airbnb",
+  "rules": {
+    "semi": "off",
+    "no-console": "off",
+    "no-plusplus": "off",
+    "eol-last": "off",
+    "max-len": ["error", 90, { "ignoreUrls": true }],
+    "prefer-destructuring": "off",
+    "indent": "off",
+    "no-param-reassign": "off",
+    "no-unused-vars": ["error", { "args": "none" }]
+  }
+}
